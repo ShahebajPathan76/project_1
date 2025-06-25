@@ -78,6 +78,13 @@ try {
     res.status(500).send("server error");
 }
 });
+const verifyToken = require('./middleware/verifyToken');
+
+app.get("/profile", verifyToken, async (req, res) => {
+  // 💬 "Only a logged-in user can reach me!"
+  const user = await User.findById(req.user.id).select("-password");
+  res.json(user);
+});
 app.listen(process.env.PORT,()=>{
     console.log(`server listening ${process.env.PORT}!`);
 });
