@@ -29,7 +29,7 @@ const App = () => {
       const res = await axios.post(url, data);
       localStorage.setItem("token", res.data.user.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      navigate("/profile");
+      navigate("/Profile");
       alert(res.data.message);
     } catch (err) {
       console.error(err);

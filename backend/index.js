@@ -6,11 +6,15 @@ const User=require("./models/User");
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const cors = require('cors');
+
+
 app.use(cors());
 
 DBConnection();
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+const problemRoutes = require('./routes/problemRoutes');
+app.use("/api/problems", problemRoutes);
 app.get("/",(req,res)=>{
     res.send("hello world its shahebaj");
 });
@@ -42,9 +46,11 @@ app.post("/register",async (req,res)=>{
     const token=jwt.sign({id:user._id,email},process.env.SECRET_KEY,{
         expiresIn: '1h',
     });
-    user.token=token;
-    user.password=undefined;
-    res.status(200).json({message:'you have successfully registered',user});
+    const userObj = user.toObject();
+userObj.token = token;
+delete userObj.password;
+
+res.status(200).json({ message: "login successful", user: userObj });
    
    } catch (error) {
     console.log(error);
@@ -69,10 +75,11 @@ try {
         process.env.SECRET_KEY,
         {expiresIn: '1h',}
     )
-    user.token=token;
-    user.password=undefined;
+    const userObj = user.toObject();
+    userObj.token = token;
+    delete userObj.password;
 
-    res.status(200).json({message:"login successful",user});
+    res.status(200).json({ message: "login successful", user: userObj });
 } catch (error) {
     console.log(error);
     res.status(500).send("server error");
@@ -80,7 +87,7 @@ try {
 });
 const verifyToken = require('./middleware/verifyToken');
 
-app.get("/profile", verifyToken, async (req, res) => {
+app.get("/Profile", verifyToken, async (req, res) => {
   // 💬 "Only a logged-in user can reach me!"
   const user = await User.findById(req.user.id).select("-password");
   res.json(user);

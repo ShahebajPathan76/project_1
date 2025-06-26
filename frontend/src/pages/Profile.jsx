@@ -16,15 +16,21 @@ const Profile = () => {
 
     // ✅ Token exists, now fetch user from backend
     axios
-      .get("http://localhost:5000/profile", {
+      .get("http://localhost:5000/Profile", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
         setUser(res.data); // ✅ save the user to state
       })
       .catch((err) => {
-        console.error(err);
-        navigate("/"); // 🔁 redirect if token is invalid
+         const msg = err.response?.data?.message;
+      if (msg === "Token expired") {
+        alert("Session expired. Please log in again.");
+      } else {
+        alert(msg || "Authentication failed.");
+      }
+      localStorage.clear();
+      navigate("/"); // 🔁 redirect to login
       });
   }, []);
 
