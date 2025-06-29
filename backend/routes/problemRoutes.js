@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Problem = require("../models/Problem");
+const isAdmin = require("../middleware/isAdmin");
 
 // Create
-router.post("/", async (req, res) => {
+router.post("/", isAdmin,async (req, res) => {
   try {
     const { title, description, difficulty, tags } = req.body;
     const problem = await Problem.create({ title, description, difficulty, tags });
@@ -35,7 +36,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update
-router.put("/:id", async (req, res) => {
+router.put("/:id", isAdmin, async (req, res) => {
   try {
     const updated = await Problem.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -49,7 +50,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',isAdmin, async (req, res) => {
     console.log("Trying to delete ID:", req.params.id);
 
   try {
