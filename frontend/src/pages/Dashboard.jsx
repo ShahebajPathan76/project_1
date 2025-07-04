@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
-  const navigate = useNavigate(); // ✅ use React Router navigation
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/"); // ✅ redirect to Login using React Router
+      navigate("/");
       return;
     }
 
@@ -29,9 +29,18 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <h1 className="text-2xl font-bold mb-4">
-        Welcome back, {user.firstname}!
-      </h1>
+      {/* Top header with profile button */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">
+          Welcome back, {user.firstname}!
+        </h1>
+        <button
+          onClick={() => navigate("/profile")}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          View Profile
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Rating Card */}
@@ -40,7 +49,7 @@ const Dashboard = () => {
           <p className="text-3xl text-blue-600">{user.rating || "N/A"}</p>
         </div>
 
-        {/* Recent Submissions (can be static or fetched from backend) */}
+        {/* Recent Submissions */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">Recent Submissions</h2>
           <ul className="text-gray-700 list-disc pl-5">

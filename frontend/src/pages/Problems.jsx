@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 const Problems = () => {
   const [problems, setProblems] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user")); // ✅ get user info
 
   useEffect(() => {
     axios
@@ -15,13 +16,18 @@ const Problems = () => {
   return (
     <div className="min-h-screen bg-orange-50 p-6">
       <h1 className="text-2xl font-bold mb-4">All Problems</h1>
-      <Link
-      to="/problems/create"
-      className="inline-block bg-green-600 text-white px-4 py-2 rounded mb-4 hover:bg-green-700"
-    >
-      + Add New Problem
-    </Link>
-      <div className="grid gap-4">
+
+      {/* ✅ Only show this if user is admin */}
+      {user?.isAdmin && (
+        <Link
+          to="/create-problem"
+          className="bg-blue-500 text-white px-3 py-1 rounded mb-4 inline-block"
+        >
+          + Add Problem
+        </Link>
+      )}
+
+      <div className="grid gap-4 mt-4">
         {problems.length > 0 ? (
           problems.map((problem) => (
             <Link

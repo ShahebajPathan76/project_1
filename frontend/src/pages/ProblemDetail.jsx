@@ -16,22 +16,22 @@ const ProblemDetails = () => {
       .catch((err) => console.error("Error fetching problem details:", err));
   }, [id]);
 
-  const handleSubmit = async () => {
+ const handleSubmit = async () => {
   try {
     const res = await axios.post("http://localhost:5000/api/submit", {
       language,
       code,
-      input: "",
+      problemId: id, // ✅ Send this to backend to fetch testCases
     });
-    console.log(res.data); // Check what you're actually receiving
 
-    alert(`Output:\n${res.data.output}`);
+    console.log("✅ Backend Response:", res.data);
+
+    alert(`Verdict: ${res.data.verdict}\n\nDetails:\n${JSON.stringify(res.data.results, null, 2)}`);
   } catch (err) {
+    console.error("❌ Submission error:", err.response?.data || err.message);
     alert("Submission failed");
-    console.error(err);
   }
 };
-
 
   if (!problem) return <div className="p-6">Loading...</div>;
 

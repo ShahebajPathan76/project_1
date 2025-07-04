@@ -21,29 +21,61 @@ router.post("/", async (req, res) => {
 
     // Step 2: Loop through each test case
     for (let i = 0; i < testCases.length; i++) {
-      const tc = testCases[i];
-      const { data } = await axios.post("http://localhost:8000/run", {
-        code,
-        language,
-        input: tc.input,
-      });
+  const tc = testCases[i];
 
-      const actual = data.output?.trim();
-      const expected = tc.output?.trim();
+  try {
+    const { data } = await axios.post("http://localhost:8000/run", {
+      code,
+      language,
+      input: tc.input,
+    });
 
-      const passed = actual === expected;
-      results.push({
-        testCase: i + 1,
-        input: tc.input,
-        expected,
-        actual,
-        verdict: passed ? "Passed" : "Failed",
-      });
+    // Check if there was a compilation or execution error
+    const actual = data.output?.trim() || "";
+    const expected = tc.output?.trim() || "";
+    let verdict;
 
-      if (!passed) {
-        allPassed = false;
-      }
+    if (data.verdict === "TLE") {
+      verdict = "TLE";
+      allPassed = false;
+    } else if (data.verdict === "Compile Error") {
+      verdict = "Compile Error";
+      allPassed = false;
+    } else if (data.verdict === "Runtime Error") {
+      verdict = "Runtime Error";
+      allPassed = false;
+    } else {
+      verdict = actual === expected ? "Passed" : "Failed";
+      if (verdict === "Failed") allPassed = false;
     }
+
+    results.push({
+      testCase: i + 1,
+      input: tc.input,
+      expected,
+      actual,
+      verdict,
+    });
+
+    // If it's not a normal failed case, break early
+    if (["TLE", "Compile Error", "Runtime Error"].includes(verdict)) {
+      break;
+    }
+
+  } catch (err) {
+    console.error("Error running test case:", err);
+    results.push({
+      testCase: i + 1,
+      input: tc.input,
+      expected: tc.output?.trim() || "",
+      actual: "",
+      verdict: "Internal Error",
+    });
+    allPassed = false;
+    break;
+  }
+}
+
 
     const finalVerdict = allPassed ? "Accepted" : "Wrong Answer";
 

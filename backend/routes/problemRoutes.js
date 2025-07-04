@@ -4,12 +4,12 @@ const Problem = require("../models/Problem");
 const isAdmin = require("../middleware/isAdmin");
 const verifyToken = require("../middleware/verifyToken");
 // Create
-router.post("/", verifyToken,async (req, res) => {
+router.post("/", verifyToken,isAdmin ,async (req, res) => {
   try {
     console.log(req.headers); 
     
     const { title, description, difficulty,testCases, tags } = req.body;
-    console.log("🧪 testCases received:", testCases);
+    // console.log("🧪 testCases received:", testCases);
     const problem = await Problem.create({ title, description, difficulty,testCases, tags });
     res.status(201).json(problem);
   } catch (err) {
