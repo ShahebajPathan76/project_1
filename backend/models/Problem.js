@@ -7,7 +7,8 @@ const problemSchema = new mongoose.Schema({
   testCases: [
     {
       input: String,
-      output: String
+      output: String,
+      isSample: { type: Boolean, default: false } // ✅ NEW FIELD
     }
   ],
   createdAt: { type: Date, default: Date.now }

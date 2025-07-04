@@ -1,12 +1,13 @@
 const express = require("express");
 const cors = require("cors");
 const { generateFile } = require("./generateFile");
-const { generateInputFile } = require("./generateInputFile");
+const generateInputFile = require("./generateInputFile");
 
-const { executeCpp } = require("./executeCpp");
-const { executeJava } = require("./executeJava");
-const { executePython } = require("./executePython");
-const { executeJs } = require("./executeJs");
+const { executeCpp } = require("./execute/executeCpp");
+const { executeJava } = require("./execute/executeJava");
+const { executePython } = require("./execute/executePython");
+const { executeJs } = require("./execute/executeJs");
+
 
 const app = express();
 app.use(cors());

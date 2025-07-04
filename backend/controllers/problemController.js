@@ -2,14 +2,29 @@ const Problem = require("../models/Problem");
 
 // Create a problem
 exports.createProblem = async (req, res) => {
-    
   try {
-    const problem = await Problem.create(req.body);
+    const { title, description, difficulty, testCases } = req.body;
+
+    console.log("📦 Request body:", req.body); // For debugging
+
+    if (!testCases || !Array.isArray(testCases) || testCases.length === 0) {
+      return res.status(400).json({ message: "Test cases are required" });
+    }
+
+    const problem = await Problem.create({
+      title,
+      description,
+      difficulty,
+      testCases,
+    });
+
     res.status(201).json(problem);
   } catch (err) {
+    console.error("❌ Error creating problem:", err.message);
     res.status(500).json({ message: "Error creating problem", error: err.message });
   }
 };
+
 
 // Get all problems
 exports.getAllProblems = async (req, res) => {

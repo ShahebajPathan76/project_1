@@ -2,12 +2,15 @@ const express = require("express");
 const router = express.Router();
 const Problem = require("../models/Problem");
 const isAdmin = require("../middleware/isAdmin");
-
+const verifyToken = require("../middleware/verifyToken");
 // Create
-router.post("/", isAdmin,async (req, res) => {
+router.post("/", verifyToken,async (req, res) => {
   try {
-    const { title, description, difficulty, tags } = req.body;
-    const problem = await Problem.create({ title, description, difficulty, tags });
+    console.log(req.headers); 
+    
+    const { title, description, difficulty,testCases, tags } = req.body;
+    console.log("🧪 testCases received:", testCases);
+    const problem = await Problem.create({ title, description, difficulty,testCases, tags });
     res.status(201).json(problem);
   } catch (err) {
     res.status(500).json({ message: "Error creating problem", error: err.message });
@@ -20,6 +23,7 @@ router.get("/", async (req, res) => {
     const problems = await Problem.find();
     res.json(problems);
   } catch (err) {
+    console.error("❌ Problem creation error:", err); // Log full error
     res.status(500).json({ message: "Error fetching problems", error: err.message });
   }
 });

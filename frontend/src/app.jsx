@@ -11,6 +11,10 @@ import Friends from "./pages/Friends";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Layout from "./components/Layout"; // includes Navbar
+import AddProblem from "./pages/AddProblem";
+import CreateProblem from "./pages/CreateProblem";
+
+
 
 const App = () => (
   <Router>
@@ -24,6 +28,10 @@ const App = () => (
       <Route path="/friends" element={<Friends />} />
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<Layout><Dashboard /></Layout>}/>
+      <Route path="/problems/create" element={<CreateProblem />} />
+      <Route path="/problems/create" element={<AddProblem />} />
+
+
     </Routes>
   </Router>
 );

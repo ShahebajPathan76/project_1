@@ -6,18 +6,21 @@ const User=require("./models/User");
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const cors = require('cors');
+const submitRoute = require("./routes/submit");
+const problemRoutes = require('./routes/problemRoutes');
 
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // or "*"
+  credentials: true,
+}));
 
 DBConnection();
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-const problemRoutes = require('./routes/problemRoutes');
+app.use("/api/submit", submitRoute);
+
 app.use("/api/problems", problemRoutes);
-app.get("/",(req,res)=>{
-    res.send("hello world its shahebaj");
-});
 
 app.post("/register",async (req,res)=>{
    try {
@@ -43,9 +46,10 @@ app.post("/register",async (req,res)=>{
         password:hashedPassword,
     });
     //generate the token for the user and send to it
-    const token=jwt.sign({id:user._id,email},process.env.SECRET_KEY,{
-        expiresIn: '1h',
-    });
+
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: "1h" });
+    console.log("Generated token:", token);
+
     const userObj = user.toObject();
 userObj.token = token;
 delete userObj.password;
@@ -70,11 +74,9 @@ try {
         return res.status(404).send("invalid email or password");
     }
     //gen a token
-    const token=jwt.sign(
-        {id:user._id,email:user.email},
-        process.env.SECRET_KEY,
-        {expiresIn: '1h',}
-    )
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: "1h" });
+    console.log("Generated token:", token);
+
     const userObj = user.toObject();
     userObj.token = token;
     delete userObj.password;
