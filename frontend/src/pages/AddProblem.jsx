@@ -28,7 +28,12 @@ const AddProblem = () => {
         difficulty,
         testCases,
       };
-      await axios.post("http://localhost:5000/api/problems", problemData);
+      await axios.post("http://localhost:5000/api/problems", problemData, {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
+
       navigate("/problems");
     } catch (err) {
       alert("Error creating problem");

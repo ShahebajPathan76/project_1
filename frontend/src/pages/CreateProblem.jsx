@@ -7,7 +7,8 @@ const CreateProblem = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [difficulty, setDifficulty] = useState("Easy");
-  const [testCases, setTestCases] = useState([{ input: "", output: "" }]);
+  const [testCases, setTestCases] = useState([{ input: "", output: "", isSample: false }]);
+
 
   const handleTestCaseChange = (index, field, value) => {
     const updated = [...testCases];
@@ -16,7 +17,7 @@ const CreateProblem = () => {
   };
 
   const addTestCase = () => {
-    setTestCases([...testCases, { input: "", output: "" }]);
+    setTestCases([...testCases, { input: "", output: "", isSample: false }]);
   };
 
   const handleSubmit = async (e) => {
@@ -25,6 +26,7 @@ const CreateProblem = () => {
 
   try {
     console.log("Token:", token);
+    console.log("🧪 Submitting TestCases:", JSON.stringify(testCases, null, 2));
 
     await axios.post(
       "http://localhost:5000/api/problems",
@@ -67,12 +69,35 @@ const CreateProblem = () => {
         </select>
 
         <h2 className="text-lg font-semibold">Test Cases</h2>
-        {testCases.map((tc, idx) => (
-          <div key={idx} className="space-y-1">
-            <input value={tc.input} onChange={(e) => handleTestCaseChange(idx, "input", e.target.value)} placeholder="Input" required className="w-full p-2 border rounded" />
-            <input value={tc.output} onChange={(e) => handleTestCaseChange(idx, "output", e.target.value)} placeholder="Expected Output" required className="w-full p-2 border rounded" />
-          </div>
-        ))}
+{testCases.map((tc, idx) => (
+  <div key={idx} className="space-y-1 border p-3 rounded bg-orange-100">
+    <input
+      value={tc.input}
+      onChange={(e) => handleTestCaseChange(idx, "input", e.target.value)}
+      placeholder="Input"
+      required
+      className="w-full p-2 border rounded"
+    />
+
+    <input
+      value={tc.output}
+      onChange={(e) => handleTestCaseChange(idx, "output", e.target.value)}
+      placeholder="Expected Output"
+      required
+      className="w-full p-2 border rounded"
+    />
+
+    <label className="flex items-center gap-2 text-sm">
+      <input
+        type="checkbox"
+        checked={tc.isSample}
+        onChange={(e) => handleTestCaseChange(idx, "isSample", e.target.checked)}
+      />
+      Is Sample?
+    </label>
+  </div>
+))}
+
         <button type="button" onClick={addTestCase} className="bg-gray-200 px-4 py-2 rounded">+ Add Test Case</button>
 
         <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">

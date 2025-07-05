@@ -23,7 +23,6 @@ router.get("/", async (req, res) => {
     const problems = await Problem.find();
     res.json(problems);
   } catch (err) {
-    console.error("❌ Problem creation error:", err); // Log full error
     res.status(500).json({ message: "Error fetching problems", error: err.message });
   }
 });

@@ -5,17 +5,24 @@ exports.createProblem = async (req, res) => {
   try {
     const { title, description, difficulty, testCases } = req.body;
 
-    console.log("📦 Request body:", req.body); // For debugging
+    console.log("📦 Request body:", req.body);
 
     if (!testCases || !Array.isArray(testCases) || testCases.length === 0) {
       return res.status(400).json({ message: "Test cases are required" });
     }
 
+    // Ensure each testCase has input, output, and isSample
+    const formattedTestCases = testCases.map((tc) => ({
+      input: tc.input || "",
+      output: tc.output || "", // ✅ ensure output field exists
+      isSample: tc.isSample || false,
+    }));
+
     const problem = await Problem.create({
       title,
       description,
       difficulty,
-      testCases,
+      testCases: formattedTestCases,
     });
 
     res.status(201).json(problem);
@@ -24,6 +31,7 @@ exports.createProblem = async (req, res) => {
     res.status(500).json({ message: "Error creating problem", error: err.message });
   }
 };
+
 
 
 // Get all problems
@@ -50,12 +58,31 @@ exports.getProblemById = async (req, res) => {
 // Update a problem
 exports.updateProblem = async (req, res) => {
   try {
-    const updated = await Problem.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { title, description, difficulty, testCases } = req.body;
+
+    const formattedTestCases = (testCases || []).map((tc) => ({
+      input: tc.input || "",
+      output: tc.output || "", // ✅ ensure output field exists
+      isSample: tc.isSample || false,
+    }));
+
+    const updated = await Problem.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        description,
+        difficulty,
+        testCases: formattedTestCases,
+      },
+      { new: true }
+    );
+
     res.json(updated);
   } catch (err) {
     res.status(500).json({ message: "Error updating problem", error: err.message });
   }
 };
+
 
 // Delete a problem
 exports.deleteProblem = async (req, res) => {
