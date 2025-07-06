@@ -9,11 +9,11 @@ import DailyProblem from "./pages/DailyProblem";
 import Friends from "./pages/Friends";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
-import AddProblem from "./pages/AddProblem";
+// import AddProblem from "./pages/AddProblem";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import EditProblemPage from "./pages/EditProblemPage";
-
+import CreateProblem from "./pages/CreateProblem";
 const App = () => (
   <Router>
     <Routes>
@@ -26,8 +26,9 @@ const App = () => (
       <Route path="/contests" element={<ProtectedRoute><Contests /></ProtectedRoute>} />
       <Route path="/daily" element={<ProtectedRoute><DailyProblem /></ProtectedRoute>} />
       <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
-      <Route path="/problems/create" element={<ProtectedRoute><AddProblem /></ProtectedRoute>} />
+      {/* <Route path="/problems/create" element={<ProtectedRoute><AddProblem /></ProtectedRoute>} /> */}
       <Route path="/editproblem/:id" element={<EditProblemPage />} />
+      <Route path="/add" element={<CreateProblem />} />
     </Routes>
   </Router>
 );

@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
       actual,
       verdict,
     });
-
+    
     // If it's not a normal failed case, break early
     if (["TLE", "Compile Error", "Runtime Error"].includes(verdict)) {
       break;
@@ -78,7 +78,7 @@ router.post("/", async (req, res) => {
 
 
     const finalVerdict = allPassed ? "Accepted" : "Wrong Answer";
-
+    
     return res.json({
       verdict: finalVerdict,
       results,

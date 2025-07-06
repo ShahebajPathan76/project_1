@@ -33,7 +33,7 @@ app.post("/run", async (req, res) => {
             case "java":
                 result = await executeJava(filePath, inputFilePath);
                 break;
-            case "py":
+            case "python":
                 result = await executePython(filePath, inputFilePath);
                 break;
             case "js":
@@ -42,7 +42,7 @@ app.post("/run", async (req, res) => {
             default:
                 return res.status(400).json({ success: false, error: "Unsupported language" });
         }
-
+        console.log("Execution Result:", result);
         res.json({ success: true, ...result });
     } catch (err) {
         res.json({ success: false, ...err });
