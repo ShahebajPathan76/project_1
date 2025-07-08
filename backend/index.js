@@ -8,6 +8,11 @@ const jwt=require('jsonwebtoken');
 const cors = require('cors');
 const submitRoute = require("./routes/submit");
 const problemRoutes = require('./routes/problemRoutes');
+const friendsRoutes = require("./routes/friendsRoutes");
+
+
+const runRoute = require("./routes/run");
+
 
 
 app.use(cors({
@@ -16,12 +21,14 @@ app.use(cors({
 }));
 
 DBConnection();
+
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use("/api/submit", submitRoute);
 
 app.use("/api/problems", problemRoutes);
-
+app.use("/api/friends", friendsRoutes);
+app.use("/api/run", runRoute);
 app.post("/register",async (req,res)=>{
    try {
      //first thing is to get all the data from frontend

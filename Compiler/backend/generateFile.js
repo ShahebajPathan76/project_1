@@ -17,7 +17,7 @@ const generateFile = async (language, code) => {
         js: "js",
     }[language];
 
-    const fileName = `${jobId}.${fileExtension}`;
+    const fileName = language === "java" ? "Main.java" : `${jobId}.${fileExtension}`;
     const filePath = path.join(dirCodes, fileName);
     await fs.promises.writeFile(filePath, code);
     return filePath;

@@ -36,6 +36,7 @@ app.post("/run", async (req, res) => {
             case "python":
                 result = await executePython(filePath, inputFilePath);
                 break;
+            case "javascript":
             case "js":
                 result = await executeJs(filePath, inputFilePath);
                 break;
@@ -45,6 +46,7 @@ app.post("/run", async (req, res) => {
         console.log("Execution Result:", result);
         res.json({ success: true, ...result });
     } catch (err) {
+          console.error("Execution Error:", err);
         res.json({ success: false, ...err });
     }
 });

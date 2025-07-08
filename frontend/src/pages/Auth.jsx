@@ -6,7 +6,6 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(true);
-
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -37,10 +36,10 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-orange-50">
-      <div className="w-full max-w-md bg-white p-8 shadow-md rounded-xl border border-orange-200">
-        <h2 className="text-2xl font-bold text-orange-600 mb-6 text-center">
-          {isLogin ? "Login" : "Register"}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-slate-800 to-indigo-900 text-white px-4">
+      <div className="w-full max-w-md backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-8 shadow-xl transition-all duration-300">
+        <h2 className="text-3xl font-extrabold text-center text-indigo-300 mb-6">
+          {isLogin ? "Welcome Back 👋" : "Create Your Account"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
@@ -52,7 +51,7 @@ const App = () => {
                 value={formData.firstname}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border border-orange-300 rounded"
+                className="w-full p-3 bg-white/20 text-white placeholder:text-white/70 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
               <input
                 type="text"
@@ -61,7 +60,7 @@ const App = () => {
                 value={formData.lastname}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border border-orange-300 rounded"
+                className="w-full p-3 bg-white/20 text-white placeholder:text-white/70 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
             </>
           )}
@@ -72,7 +71,7 @@ const App = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full p-2 border border-orange-300 rounded"
+            className="w-full p-3 bg-white/20 text-white placeholder:text-white/70 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
           <input
             type="password"
@@ -81,20 +80,21 @@ const App = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            className="w-full p-2 border border-orange-300 rounded"
+            className="w-full p-3 bg-white/20 text-white placeholder:text-white/70 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
           <button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white p-2 rounded"
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold p-3 rounded-xl transition-all duration-300 shadow-md"
           >
             {isLogin ? "Login" : "Register"}
           </button>
         </form>
-        <p className="text-center text-sm text-gray-600 mt-4">
+
+        <p className="text-center text-sm mt-6 text-white/70">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="text-orange-600 underline"
+            className="text-indigo-300 hover:underline font-medium"
           >
             {isLogin ? "Register" : "Login"} here
           </button>

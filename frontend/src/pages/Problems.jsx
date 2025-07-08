@@ -20,78 +20,88 @@ const Problems = () => {
   };
 
   const handleDelete = async (id) => {
-  const confirmDelete = window.confirm("Are you sure you want to delete this problem?");
-  if (!confirmDelete) return;
+    const confirmDelete = window.confirm("Are you sure you want to delete this problem?");
+    if (!confirmDelete) return;
 
-  try {
-    const token = user?.token;
-    if (!token) {
-      alert("No token found. Please log in again.");
-      return;
+    try {
+      const token = user?.token;
+      if (!token) {
+        alert("No token found. Please log in again.");
+        return;
+      }
+
+      await axios.delete(`http://localhost:5000/api/problems/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setProblems((prev) => prev.filter((p) => p._id !== id));
+    } catch (err) {
+      console.error("Error deleting problem:", err.response?.data || err.message);
+      alert("Failed to delete the problem.");
     }
+  };
 
-    await axios.delete(`http://localhost:5000/api/problems/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    setProblems((prev) => prev.filter((p) => p._id !== id));
-  } catch (err) {
-    console.error("Error deleting problem:", err.response?.data || err.message);
-    alert("Failed to delete the problem.");
-  }
-};
-
+  const getDifficultyColor = (difficulty) => {
+    if (difficulty === "Easy") return "text-green-400";
+    if (difficulty === "Medium") return "text-yellow-400";
+    return "text-red-400";
+  };
 
   return (
-    <div className="min-h-screen bg-orange-50 p-6">
-      <h1 className="text-2xl font-bold mb-4">All Problems</h1>
-
-      {user?.isAdmin && (
-        <Link
-          to="/add"
-          className="bg-blue-500 text-white px-3 py-1 rounded mb-4 inline-block"
-        >
-          + Add Problem
-        </Link>
-      )}
-
-      <div className="grid gap-4 mt-4">
-        {problems.length > 0 ? (
-          problems.map((problem) => (
-            <div
-              key={problem._id}
-              className="bg-white p-4 rounded shadow hover:shadow-md border hover:bg-gray-100"
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-purple-900 p-6 text-white">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">📚 All Problems</h1>
+          {user?.isAdmin && (
+            <Link
+              to="/add"
+              className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg shadow text-white font-semibold"
             >
-              <div className="flex items-center justify-between">
-                <Link to={`/problems/${problem._id}`}>
-                  <h2 className="text-lg font-semibold">{problem.title}</h2>
-                  <p className="text-gray-600">{problem.difficulty}</p>
-                </Link>
+              ➕ Add Problem
+            </Link>
+          )}
+        </div>
 
-                {user?.isAdmin && (
-                  <div className="flex gap-2 ml-2">
-                    <Link
-                      to={`/editproblem/${problem._id}`}
-                      className="text-sm bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded"
-                    >
-                      ✏️ Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(problem._id)}
-                      className="text-sm bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
-                    >
-                      🗑️ Delete
-                    </button>
-                  </div>
-                )}
+        <div className="grid gap-6">
+          {problems.length > 0 ? (
+            problems.map((problem) => (
+              <div
+                key={problem._id}
+                className="bg-white/10 backdrop-blur-sm border border-white/20 p-5 rounded-xl hover:shadow-lg transition duration-200"
+              >
+                <div className="flex justify-between items-center flex-wrap gap-4">
+                  <Link to={`/problems/${problem._id}`} className="flex-1">
+                    <h2 className="text-xl font-semibold hover:underline transition">{problem.title}</h2>
+                    <p className={`mt-1 ${getDifficultyColor(problem.difficulty)} font-medium`}>
+                      {problem.difficulty}
+                    </p>
+                  </Link>
+
+                  {user?.isAdmin && (
+                    <div className="flex gap-2">
+                      <Link
+                        to={`/editproblem/${problem._id}`}
+                        className="text-sm bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-1 rounded-md font-semibold"
+                      >
+                        ✏️ Edit
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(problem._id)}
+                        className="text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md font-semibold"
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <p>No problems found.</p>
-        )}
+            ))
+          ) : (
+            <p className="text-gray-300">No problems found.</p>
+          )}
+        </div>
       </div>
     </div>
   );
