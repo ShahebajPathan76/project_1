@@ -9,7 +9,7 @@ const cors = require('cors');
 const submitRoute = require("./routes/submit");
 const problemRoutes = require('./routes/problemRoutes');
 const friendsRoutes = require("./routes/friendsRoutes");
-
+const aiReviewRoutes = require('./routes/aiReview');
 
 const runRoute = require("./routes/run");
 
@@ -29,6 +29,7 @@ app.use("/api/submit", submitRoute);
 app.use("/api/problems", problemRoutes);
 app.use("/api/friends", friendsRoutes);
 app.use("/api/run", runRoute);
+app.use("/api", aiReviewRoutes);
 app.post("/register",async (req,res)=>{
    try {
      //first thing is to get all the data from frontend

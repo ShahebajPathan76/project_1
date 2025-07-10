@@ -43,6 +43,8 @@ const ProblemDetails = () => {
   const [code, setCode] = useState(boilerplateMap["cpp"]);
   const [verdict, setVerdict] = useState("");
   const isLoggedIn = localStorage.getItem("token") !== null;
+  const [review,setReview]=useState("");
+  const [reviewLoading,setReviewLoading]=useState(false);
   const navigate = useNavigate();
 
   const handleLanguageChange = (e) => {
@@ -87,6 +89,20 @@ const ProblemDetails = () => {
     }
   };
 
+  const handleCodeReview=async ()=>{
+    setReviewLoading(true);
+    try {
+      const res=await axios.post("http://localhost:5000/api/ai-review",{code});
+      setReview(res.data.review);
+      
+    } catch (error) {
+      setReview("error reviewing code");
+      console.log(error);
+    }
+    finally{
+      setReviewLoading(false);
+    }
+  }
   useEffect(() => {
     if (verdict) {
       const timer = setTimeout(() => setVerdict(""), 4000);
@@ -181,6 +197,21 @@ const ProblemDetails = () => {
                 ▶️ Run Code
               </button>
             )}
+            <button
+            onClick={handleCodeReview}
+            className="w-full mt-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white transition">
+              🤖 Review with AI
+            </button>
+              {reviewLoading && (
+            <p className="text-yellow-300 mt-2">AI is thinking... 🤔</p>
+            )}
+            {review && (
+              <div className="mt-4 p-4 bg-slate-800 border border-slate-600 rounded text-white">
+                <h4 className="font-bold mb-2">AI Review:</h4>
+                <pre className="whitespace-pre-wrap">{review}</pre>
+              </div>
+            )}
+
 
             {output && (
               <div className="mt-4 p-4 bg-slate-800 border border-slate-600 rounded text-white">

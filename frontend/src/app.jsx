@@ -14,6 +14,8 @@ import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import EditProblemPage from "./pages/EditProblemPage";
 import CreateProblem from "./pages/CreateProblem";
+// import AiReviewPage from "./pages/AiReviewPage";
+
 const App = () => (
   <Router>
     <Routes>
@@ -29,6 +31,7 @@ const App = () => (
       {/* <Route path="/problems/create" element={<ProtectedRoute><AddProblem /></ProtectedRoute>} /> */}
       <Route path="/editproblem/:id" element={<EditProblemPage />} />
       <Route path="/add" element={<CreateProblem />} />
+      {/* <Route path="/ai-review" element={<Layout><AiReviewPage /></Layout>} /> */}
     </Routes>
   </Router>
 );

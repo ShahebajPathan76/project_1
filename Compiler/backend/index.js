@@ -7,12 +7,14 @@ const { executeCpp } = require("./execute/executeCpp");
 const { executeJava } = require("./execute/executeJava");
 const { executePython } = require("./execute/executePython");
 const { executeJs } = require("./execute/executeJs");
+const generateAiResponse=require("./generateAiResponse");
+const aiRoutes = require("../../backend/routes/aiReview");
 
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+app.use("/api", aiRoutes);
 app.post("/run", async (req, res) => {
     const { language, code, input } = req.body;
 
@@ -51,6 +53,8 @@ app.post("/run", async (req, res) => {
     }
 });
 
-app.listen(8000, () => {
+
+const PORT=process.env.PORT || 8000
+app.listen(PORT, () => {
     console.log("Server running on port 8000");
 });
