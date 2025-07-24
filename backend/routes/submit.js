@@ -24,15 +24,25 @@ router.post("/", async (req, res) => {
   const tc = testCases[i];
 
   try {
-    const { data } = await axios.post("http://localhost:8000/run", {
+    const { data } = await axios.post(`${process.env.VITE_COMPILER_URL}/run`, {
       code,
       language,
       input: tc.input,
     });
 
     // Check if there was a compilation or execution error
-    const actual = data.output?.trim() || "";
-    const expected = tc.output?.trim() || "";
+    const normalize = (str) =>
+  str
+    .replace(/\r/g, "")
+    .trim()
+    .split("\n")
+    .map(line => line.trim().replace(/\s+/g, " ")) // collapse multiple spaces
+    .join("\n");
+
+
+const actual = normalize(data.output || "");
+const expected = normalize(tc.output || "");
+
     let verdict;
 
     if (data.verdict === "TLE") {

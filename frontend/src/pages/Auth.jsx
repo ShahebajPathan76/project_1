@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -18,7 +18,7 @@ const App = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const url = `${API_BASE_URL}/${isLogin ? "login" : "register"}`;

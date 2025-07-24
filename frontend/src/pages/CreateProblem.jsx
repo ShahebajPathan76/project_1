@@ -7,22 +7,19 @@ const CreateProblem = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [difficulty, setDifficulty] = useState("Easy");
+  const [tags, setTags] = useState(""); // NEW: tags as comma separated string
   const [testCases, setTestCases] = useState([
     { input: "", output: "", isSample: false },
   ]);
 
   const handleTestCaseChange = (index, field, value) => {
-  const updated = [...testCases];
-  // ✅ Force checkbox to store boolean (true/false), not string or undefined
-  updated[index][field] = field === "isSample" ? !!value : value;
-  setTestCases(updated);
-};
+    const updated = [...testCases];
+    updated[index][field] = field === "isSample" ? !!value : value;
+    setTestCases(updated);
+  };
 
   const addTestCase = () => {
-    setTestCases([
-      ...testCases,
-      { input: "", output: "", isSample: false },
-    ]);
+    setTestCases([...testCases, { input: "", output: "", isSample: false }]);
   };
 
   const handleSubmit = async (e) => {
@@ -30,21 +27,19 @@ const CreateProblem = () => {
     const token = localStorage.getItem("token");
 
     try {
-      console.log("📤 Sending testCases to backend:", JSON.stringify(testCases, null, 2));
-      console.log("📤 Submitting problem with:", {
-  title,
-  description,
-  difficulty,
-  testCases,
-});
-console.log("🔑 Token:", token);
+      // Parse tags string by commas, remove extra spaces and empty entries
+      const tagsArray = tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t.length > 0);
 
       await axios.post(
-        "http://localhost:5000/api/problems",
+        `${import.meta.env.VITE_BACKEND_URL}/api/problems`,
         {
           title,
           description,
           difficulty,
+          tags: tagsArray, // send as array
           testCases,
         },
         {
@@ -55,16 +50,8 @@ console.log("🔑 Token:", token);
       );
 
       navigate("/problems");
-
     } catch (err) {
       console.error("❌ Error creating problem:", err);
-  if (err.response) {
-    console.error("📥 Server responded with:", err.response.data);
-  } else if (err.request) {
-    console.error("📡 No response received:", err.request);
-  } else {
-    console.error("⚙️ Axios config error:", err.message);
-  }
     }
   };
 
@@ -99,39 +86,38 @@ console.log("🔑 Token:", token);
           <option value="Hard">Hard</option>
         </select>
 
+        {/* NEW: Tags Input */}
+        <input
+          type="text"
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
+          placeholder="Tags (comma separated, e.g. Greedy, DP, Array)"
+          className="w-full p-2 border rounded"
+        />
+
         <h2 className="text-lg font-semibold">Test Cases</h2>
 
         {testCases.map((tc, idx) => (
           <div key={idx} className="space-y-2 border-2 border-black p-4 rounded bg-orange-100">
-
             <input
               value={tc.input}
-              onChange={(e) =>
-                handleTestCaseChange(idx, "input", e.target.value)
-              }
+              onChange={(e) => handleTestCaseChange(idx, "input", e.target.value)}
               placeholder="Input"
               required
               className="w-full p-2 border rounded"
             />
-
             <input
               value={tc.output}
-              onChange={(e) =>
-                handleTestCaseChange(idx, "output", e.target.value)
-              }
+              onChange={(e) => handleTestCaseChange(idx, "output", e.target.value)}
               placeholder="Expected Output"
               required
               className="w-full p-2 border rounded"
             />
-
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
-                
                 checked={tc.isSample}
-                onChange={(e) =>
-                  handleTestCaseChange(idx, "isSample", e.target.checked)
-                }
+                onChange={(e) => handleTestCaseChange(idx, "isSample", e.target.checked)}
               />
               <span>Mark as Sample Test Case</span>
             </label>

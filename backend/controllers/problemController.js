@@ -58,13 +58,17 @@ exports.getProblemById = async (req, res) => {
 // Update a problem
 exports.updateProblem = async (req, res) => {
   try {
-    const { title, description, difficulty, testCases } = req.body;
+    const { title, description, difficulty, testCases, tags } = req.body;
 
     const formattedTestCases = (testCases || []).map((tc) => ({
       input: tc.input || "",
-      output: tc.output || "", // ✅ ensure output field exists
+      output: tc.output || "",
       isSample: tc.isSample || false,
     }));
+
+    const formattedTags = Array.isArray(tags)
+      ? tags.map((t) => String(t).trim()).filter((t) => t.length > 0)
+      : [];
 
     const updated = await Problem.findByIdAndUpdate(
       req.params.id,
@@ -73,6 +77,7 @@ exports.updateProblem = async (req, res) => {
         description,
         difficulty,
         testCases: formattedTestCases,
+        tags: formattedTags,      // <-- Pass tags here properly
       },
       { new: true }
     );
@@ -82,6 +87,7 @@ exports.updateProblem = async (req, res) => {
     res.status(500).json({ message: "Error updating problem", error: err.message });
   }
 };
+
 
 
 // Delete a problem

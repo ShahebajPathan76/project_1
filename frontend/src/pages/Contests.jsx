@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Contests = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white">
-      <Navbar />
+      {/* <Navbar /> */}
 
       <div className="text-center py-14 px-4">
         <h1 className="text-4xl font-extrabold mb-3">Contests</h1>
@@ -23,7 +23,7 @@ const Contests = () => {
             to="#"
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
           >
-            Register Now
+           Coming Soon!
           </Link>
         </div>
 
@@ -35,7 +35,7 @@ const Contests = () => {
             to="#"
             className="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
           >
-            Start Now
+            Coming Soon!
           </Link>
         </div>
 

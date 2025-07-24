@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
 const { generateFile } = require("./generateFile");
 const generateInputFile = require("./generateInputFile");
 
@@ -7,14 +8,15 @@ const { executeCpp } = require("./execute/executeCpp");
 const { executeJava } = require("./execute/executeJava");
 const { executePython } = require("./execute/executePython");
 const { executeJs } = require("./execute/executeJs");
-const generateAiResponse=require("./generateAiResponse");
-const aiRoutes = require("../../backend/routes/aiReview");
 
-
+const aiReviewRoutes = require("./routes/aiReview");
+const runRoute = require("./routes/run");
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/api", aiRoutes);
+// app.use("/api", aiRoutes);
+app.use("/api", aiReviewRoutes);
+app.use("/api/run", runRoute);
 app.post("/run", async (req, res) => {
     const { language, code, input } = req.body;
 
@@ -23,8 +25,11 @@ app.post("/run", async (req, res) => {
     }
 
     try {
-        const filePath = await generateFile(language, code);
+        const {filePath} = await generateFile(language, code);
         const inputFilePath = await generateInputFile(input);
+
+        // ✅ Read actual code content from file
+        // const actualCode = await fs.promises.readFile(filePath, "utf-8")
 
         let result;
 
@@ -45,16 +50,20 @@ app.post("/run", async (req, res) => {
             default:
                 return res.status(400).json({ success: false, error: "Unsupported language" });
         }
-        console.log("Execution Result:", result);
+
+        // Optional clean-up
+        await fs.promises.unlink(filePath);
+
+        // console.log("Execution Result:", result);
         res.json({ success: true, ...result });
     } catch (err) {
-          console.error("Execution Error:", err);
+        // console.error("Execution Error:", err);
         res.json({ success: false, ...err });
     }
 });
 
 
-const PORT=process.env.PORT || 8000
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log("Server running on port 8000");
 });

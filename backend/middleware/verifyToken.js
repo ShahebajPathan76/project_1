@@ -10,12 +10,12 @@ const verifyToken = (req, res, next) => {
 
   try {
    
-    console.log("Auth Header:", req.headers.authorization); // See if token is received
-if (!process.env.SECRET_KEY) {
-  console.log("❌ SECRET_KEY is missing from .env or dotenv is not loaded.");
-} else {
-  console.log("✅ SECRET_KEY Loaded:", process.env.SECRET_KEY);
-}
+//     console.log("Auth Header:", req.headers.authorization); // See if token is received
+// if (!process.env.SECRET_KEY) {
+//   console.log("❌ SECRET_KEY is missing from .env or dotenv is not loaded.");
+// } else {
+//   console.log("✅ SECRET_KEY Loaded:", process.env.SECRET_KEY);
+// }
 
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);

@@ -2,52 +2,66 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import { FaSearch, FaUserPlus } from "react-icons/fa"; // 🔥 Add icons
+import { FaSearch, FaUserPlus } from "react-icons/fa";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [rating, setRating] = useState(1450);
   const [friendsCount, setFriendsCount] = useState(5);
   const [submissions, setSubmissions] = useState([]);
-  const [search, setSearch] = useState("");             // 🔥
-  const [results, setResults] = useState([]);           // 🔥
+  const [search, setSearch] = useState("");
+  const [results, setResults] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return navigate("/");
 
+    // Fetch user data
     axios
-      .get("http://localhost:5000/Profile", {
+      .get(`${import.meta.env.VITE_BACKEND_URL}/Profile`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
         setUser(res.data);
         setRating(1620);
-        setFriendsCount(12);
-        setSubmissions([
-          { problem: "Two Sum", status: "Accepted", date: "2025-07-07" },
-          { problem: "Palindrome", status: "Wrong Answer", date: "2025-07-06" },
-          { problem: "Binary Search", status: "Accepted", date: "2025-07-05" },
-        ]);
+        setFriendsCount(1);
       })
       .catch((err) => {
         const msg = err.response?.data?.message;
-        alert(msg === "Token expired" ? "Session expired. Please log in again." : msg || "Authentication failed.");
+        alert(
+          msg === "Token expired"
+            ? "Session expired. Please log in again."
+            : msg || "Authentication failed."
+        );
         localStorage.clear();
         navigate("/");
       });
-  }, []);
+
+    // Fetch user's own submissions
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/submission/my`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setSubmissions(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to load submissions", err);
+      });
+  }, [navigate]);
 
   const handleSearch = async () => {
     const token = localStorage.getItem("token");
     if (!search.trim()) return;
 
     try {
-      const res = await axios.get(`http://localhost:5000/api/friends/search?q=${search}`, {
-
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/friends/search?q=${search}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setResults(res.data);
     } catch (err) {
       alert("Error while searching users");
@@ -57,13 +71,16 @@ const Profile = () => {
   const handleAddFriend = async (friendId) => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.post(`http://localhost:5000/api/friends/add-friend/${friendId}`, {}, {
-
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/friends/add-friend/${friendId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       alert("Friend added successfully!");
       setFriendsCount((prev) => prev + 1);
-      setResults((prev) => prev.filter((user) => user._id !== friendId)); // Optional: remove from list
+      setResults((prev) => prev.filter((user) => user._id !== friendId));
     } catch (err) {
       alert("Something went wrong while adding friend!");
     }
@@ -73,7 +90,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-purple-900 text-white">
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="max-w-5xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-6">
         {/* Left: User Info Card */}
         <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-lg">
@@ -81,12 +98,18 @@ const Profile = () => {
             {user.firstname} {user.lastname}
           </h2>
           <p className="text-white/80 mb-2">📧 {user.email}</p>
-          <p className="text-white/70 mb-2">🏆 Rating: <span className="text-green-400 font-semibold">{rating}</span></p>
+          <p className="text-white/70 mb-2">
+            🏆 Rating:{" "}
+            <span className="text-green-400 font-semibold">{rating}</span>
+          </p>
           <p
             className="text-white/70 hover:text-blue-400 cursor-pointer transition"
-            onClick={() => navigate("/friends")}
+            onClick={() => {
+              navigate("/friends", { state: { fromProfile: true } });
+            }}
           >
-            👥 Friends: <span className="text-blue-300 underline">{friendsCount}</span>
+            👥 Friends:{" "}
+            <span className="text-blue-300 underline">{friendsCount}</span>
           </p>
           <button
             onClick={() => {
@@ -103,23 +126,33 @@ const Profile = () => {
         <div className="space-y-6">
           {/* Submissions Box */}
           <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-lg">
-            <h3 className="text-xl font-semibold text-indigo-200 mb-4">📝 Recent Submissions</h3>
+            <h3 className="text-xl font-semibold text-indigo-200 mb-4">
+              📝 Recent Submissions
+            </h3>
             {submissions.length === 0 ? (
               <p className="text-white/70">No submissions yet.</p>
             ) : (
               <ul className="space-y-3">
-                {submissions.map((sub, index) => (
+                {submissions.map((sub) => (
                   <li
-                    key={index}
-                    className={`flex justify-between items-center px-4 py-2 rounded-lg ${
+                    key={sub._id}
+                    onClick={() =>
+                      navigate(`/problems/${sub.problem._id}`, {
+                        state: { code: sub.code, language: sub.language },
+                      })
+                    }
+                    className={`flex justify-between items-center px-4 py-2 rounded-lg cursor-pointer ${
                       sub.status === "Accepted"
                         ? "bg-green-500/20 text-green-300"
                         : "bg-red-500/20 text-red-300"
                     }`}
+                    title="Click to view submission"
                   >
-                    <span>{sub.problem}</span>
+                    <span>{sub.problem?.title || "Unknown Problem"}</span>
                     <span>{sub.status}</span>
-                    <span className="text-sm text-white/50">{sub.date}</span>
+                    <span className="text-sm text-white/50">
+                      {new Date(sub.createdAt).toLocaleString()}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -128,7 +161,9 @@ const Profile = () => {
 
           {/* 🔥 Search User Box */}
           <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl shadow-lg">
-            <h3 className="text-lg font-semibold text-indigo-200 mb-2">🔍 Search Users</h3>
+            <h3 className="text-lg font-semibold text-indigo-200 mb-2">
+              🔍 Search Users
+            </h3>
             <div className="flex gap-2 mb-3">
               <input
                 type="text"
@@ -145,7 +180,6 @@ const Profile = () => {
               </button>
             </div>
 
-            {/* 🔥 Show Results */}
             {results.map((u) => (
               <div
                 key={u._id}

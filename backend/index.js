@@ -9,27 +9,33 @@ const cors = require('cors');
 const submitRoute = require("./routes/submit");
 const problemRoutes = require('./routes/problemRoutes');
 const friendsRoutes = require("./routes/friendsRoutes");
-const aiReviewRoutes = require('./routes/aiReview');
-
-const runRoute = require("./routes/run");
 
 
+const submissionsRoute = require('./routes/submission');
 
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 app.use(cors({
-  origin: "http://localhost:5173", // or "*"
+
+  origin: [
+      "https://hack-arena.info",
+      "https://hack-arena.vercel.app",
+      "https://www.hack-arena.info",
+    "http://localhost:5173"], // or "*"
   credentials: true,
 }));
 
 DBConnection();
 
-app.use(express.json());
-app.use(express.urlencoded({extended:true}));
 app.use("/api/submit", submitRoute);
 
 app.use("/api/problems", problemRoutes);
 app.use("/api/friends", friendsRoutes);
-app.use("/api/run", runRoute);
-app.use("/api", aiReviewRoutes);
+
+
+
+app.use('/api/submission', submissionsRoute);
+
 app.post("/register",async (req,res)=>{
    try {
      //first thing is to get all the data from frontend
@@ -56,7 +62,7 @@ app.post("/register",async (req,res)=>{
     //generate the token for the user and send to it
 
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: "1h" });
-    console.log("Generated token:", token);
+    // console.log("Generated token:", token);
 
     const userObj = user.toObject();
 userObj.token = token;
@@ -83,7 +89,7 @@ try {
     }
     //gen a token
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: "1h" });
-    console.log("Generated token:", token);
+    // console.log("Generated token:", token);
 
     const userObj = user.toObject();
     userObj.token = token;
@@ -92,7 +98,7 @@ try {
     res.status(200).json({ message: "login successful", user: userObj });
 } catch (error) {
     console.log(error);
-    res.status(500).send("server error");
+    res.status(500).send("server error")
 }
 });
 const verifyToken = require('./middleware/verifyToken');
@@ -102,6 +108,29 @@ app.get("/Profile", verifyToken, async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
   res.json(user);
 });
+
+//
+const axios = require("axios");
+
+app.post("/api/ai-review", async (req, res) => {
+  try {
+    const response = await axios.post(`${process.env.VITE_COMPILER_URL}/api/ai-review`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    console.error("Error proxying AI Review:", error.message);
+    res.status(500).json({ success: false, error: "AI review failed (proxy)." });
+  }
+});
+app.post("/api/run", async (req, res) => {
+  try {
+    const response = await axios.post(`${process.env.VITE_COMPILER_URL}/api/run`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    console.error("Error proxying run request:", err.message);
+    res.status(500).json({ verdict: "Execution Failed", error: err.message });
+  }
+});
+
 app.listen(process.env.PORT,()=>{
     console.log(`server listening ${process.env.PORT}!`);
 });
