@@ -29,7 +29,10 @@ Hack Arena is a full-stack **Online Judge platform** built with the **MERN stack
 ## 🖼 Demo
 
 - 🔗 **Live**: [https://hack-arena.info](https://hack-arena.info)  
-- 📹 **Demo Video**: [https://www.loom.com/share/511a158b3a8347c0981d1657591226ab?sid=48d6affa-cd82-48a5-b9bd-87961a15796f](#)
+- 📹 **Demo Video**: - 📹 **Demo Video**: [Watch here](https://www.loom.com/share/511a158b3a8347c0981d1657591226ab?sid=48d6affa-cd82-48a5-b9bd-87961a15796f)
+
+
+
 
 ---
 
