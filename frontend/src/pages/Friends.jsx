@@ -42,7 +42,7 @@ const Friends = () => {
   const handleAddFriend = async (friendId) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/friends/add-friend/${friendId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/friends/add-friend/${friendId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
