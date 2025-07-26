@@ -16,7 +16,7 @@ import CreateProblem from "./pages/CreateProblem";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const App = () => (
+const App = ()=>(
   <Router>
     {/* ToastContainer outside Routes */}
     <ToastContainer position="top-right" />
