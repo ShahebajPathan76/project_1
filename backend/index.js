@@ -19,7 +19,7 @@ app.use(cors({
 
   origin: [
       "https://hack-arena.info",
-      "https://hack-arena.vercel.app",
+      "https://hack-arena-pi.vercel.app/",
       "https://www.hack-arena.info",
     "http://localhost:5173"], // or "*"
   credentials: true,

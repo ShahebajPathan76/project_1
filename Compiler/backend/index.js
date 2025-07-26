@@ -63,7 +63,7 @@ app.post("/run", async (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
+
+app.listen(8000, () => {
     console.log("Server running on port 8000");
 });
