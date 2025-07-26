@@ -1,12 +1,87 @@
-# React + Vite
+# Hack Arena - An Online Judge Platform 🧠💻
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Hack Arena is a full-stack **Online Judge platform** built with the **MERN stack**, enabling users to solve coding problems, get AI-based code reviews, compete with friends, and manage problems through an admin panel.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- 🔐 **JWT Authentication** for secure login/signup  
+- 🧩 **Problem Management** (Admins can Create, Edit, Delete problems)  
+- 🖊️ **Monaco Code Editor** with multi-language support  
+- 🧠 **AI-powered Code Review & Complexity Analysis**  
+- 📥 **Real-time Code Execution** using Docker sandbox  
+- 📊 **Submission History** with code verdict and replays  
+- 👥 **Friend System** (Search, Add, Remove friends)  
+- 🛠️ **Admin Panel** with full problem control  
+- 🔎 **Search/Filter Problems** by tag, difficulty, or title
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🤖 AI Features (Gemini API)
+
+- **💡 Get Hint**: Suggests a clue for the current problem  
+- **🧪 Code Feedback**: Reviews logic and recommends improvements  
+- **⏱ Time Complexity**: Estimates time complexity of submitted code
+
+---
+
+## 🖼 Demo
+
+- 🔗 **Live**: [https://hack-arena.info](https://hack-arena.info)  
+- 📹 **Demo Video**: [https://www.loom.com/share/511a158b3a8347c0981d1657591226ab?sid=48d6affa-cd82-48a5-b9bd-87961a15796f](#)
+
+---
+
+## ⚙ Tech Stack
+
+| Layer         | Tech                                   |
+|---------------|-----------------------------------------|
+| Frontend      | React, Tailwind CSS, Vite, Axios        |
+| Backend       | Node.js, Express.js                     |
+| Database      | MongoDB with Mongoose                   |
+| Code Runner   | Docker-based microservice on AWS EC2    |
+| AI Features   | Google Gemini API                       |
+| Deployment    | Vercel (Frontend), AWS EC2 + ECR (Backend & Compiler) |
+
+---
+
+## 📸 Screenshots
+
+### 🧩 Problems Page
+![Problems](screenshots/problem-page.png)
+
+---
+
+## 🛠 Installation & Setup
+
+### 📦 Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+
+🔧 Backend
+
+cd backend
+npm install
+node index.js
+
+🖥 Compiler Service
+
+cd compiler
+npm install
+node index.js
+
+🔐 Environment Variables
+Create .env files in backend/ and compiler/ folders:
+
+bash
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+PORT=your_port
+
+
+
+
